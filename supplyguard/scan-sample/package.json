@@ -1,0 +1,7 @@
+{
+  "name": "supplyguard-scan-sample",
+  "version": "1.0.0",
+  "dependencies": {
+    "lodash": "*"
+  }
+}

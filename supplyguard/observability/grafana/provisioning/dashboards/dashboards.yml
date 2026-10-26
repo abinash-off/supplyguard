@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: SupplyGuard
+    orgId: 1
+    folder: SupplyGuard
+    type: file
+    disableDeletion: true
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
