@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/static/:path*", "destination": "/:path*" }
+  ],
+  "headers": [
+    {
+      "source": "/js/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=60, must-revalidate" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: supplyguard-data
+  namespace: supplyguard
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supplyguard
+  namespace: supplyguard
+  labels:
+    app.kubernetes.io/name: supplyguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: supplyguard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: supplyguard
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "5050"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: supplyguard
+          image: ghcr.io/OWNER/supplyguard:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5050
+          env:
+            - name: APP_NAME
+              value: SupplyGuard
+            - name: APP_HOST
+              value: 0.0.0.0
+            - name: APP_PORT
+              value: "5050"
+            - name: PORT
+              value: "5050"
+            - name: APP_RELOAD
+              value: "false"
+            - name: DATABASE_PATH
+              value: /data/supplyguard.db
+            - name: CORS_ORIGINS
+              value: "*"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: supplyguard-secrets
+                  key: SECRET_KEY
+          volumeMounts:
+            - name: app-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: 1000m
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: supplyguard-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supplyguard
+  namespace: supplyguard
+  labels:
+    app.kubernetes.io/name: supplyguard
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: supplyguard
+  ports:
+    - name: http
+      port: 5050
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: supplyguard
+  namespace: supplyguard
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: supplyguard.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: supplyguard
+                port:
+                  number: 5050

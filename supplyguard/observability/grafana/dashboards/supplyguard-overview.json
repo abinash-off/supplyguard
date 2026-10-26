@@ -1,0 +1,16 @@
+{
+  "uid": "supplyguard-overview",
+  "title": "SupplyGuard Demo Operations",
+  "tags": ["supplyguard", "simulation"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "panels": [
+    {"id": 1, "type": "stat", "title": "Application health", "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0}, "targets": [{"expr": "supplyguard_up", "refId": "A"}], "fieldConfig": {"defaults": {"min": 0, "max": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}}},
+    {"id": 2, "type": "stat", "title": "Inventory SKUs", "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0}, "targets": [{"expr": "supplyguard_inventory_skus", "refId": "A"}]},
+    {"id": 3, "type": "stat", "title": "Shipments in transit", "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0}, "targets": [{"expr": "supplyguard_shipments_in_transit", "refId": "A"}]},
+    {"id": 4, "type": "stat", "title": "Pipeline stages", "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0}, "targets": [{"expr": "supplyguard_pipeline_stage_count", "refId": "A"}]},
+    {"id": 5, "type": "timeseries", "title": "Demo mode", "gridPos": {"h": 8, "w": 24, "x": 0, "y": 5}, "targets": [{"expr": "supplyguard_demo_mode", "refId": "A", "legendFormat": "Simulated services (1 = on)"}]}
+  ]
+}

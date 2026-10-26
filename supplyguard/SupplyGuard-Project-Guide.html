@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SupplyGuard Project Guide</title>
+  <style>
+    :root { --ink:#17263b; --muted:#52657d; --blue:#1769aa; --pale:#edf5fc; --line:#d5e0eb; --green:#18794e; --amber:#946200; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#eaf0f6; color:var(--ink); font:15px/1.55 "Segoe UI",Arial,sans-serif; }
+    main { max-width:900px; margin:28px auto; padding:54px 64px; background:white; box-shadow:0 4px 24px #17263b22; }
+    h1,h2,h3 { line-height:1.2; color:#10253f; }
+    h1 { font-size:38px; margin:.2em 0; }
+    h2 { font-size:25px; margin:0 0 14px; padding-bottom:8px; border-bottom:2px solid var(--line); }
+    h3 { font-size:17px; margin:20px 0 6px; }
+    p { margin:8px 0 12px; }
+    li { margin:5px 0; }
+    .cover { min-height:730px; display:flex; flex-direction:column; justify-content:center; }
+    .eyebrow { color:var(--blue); font-weight:700; letter-spacing:.12em; font-size:12px; }
+    .subtitle { font-size:20px; color:var(--muted); max-width:630px; }
+    .callout { background:var(--pale); border-left:4px solid var(--blue); padding:12px 16px; margin:16px 0; }
+    .warning { background:#fff7e4; border-left-color:#d99400; }
+    .good { background:#ecf8f1; border-left-color:var(--green); }
+    .diagram { margin:18px 0 22px; padding:15px; border:1px solid var(--line); border-radius:8px; background:#fbfdff; }
+    .flow { display:flex; align-items:stretch; justify-content:center; gap:8px; flex-wrap:wrap; }
+    .box { flex:1 1 115px; min-width:110px; padding:12px 10px; text-align:center; border:1px solid #a9c6df; border-radius:7px; background:#f0f7fd; }
+    .box b { display:block; color:#15568b; }
+    .arrow { align-self:center; font-size:21px; color:var(--blue); }
+    .caption { color:var(--muted); font-size:12px; margin-top:9px; text-align:center; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .card { border:1px solid var(--line); border-radius:7px; padding:12px 14px; break-inside:avoid; }
+    .card h3 { margin:0 0 5px; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+    th,td { text-align:left; vertical-align:top; padding:8px; border:1px solid var(--line); }
+    th { background:var(--pale); }
+    code { font-family:Consolas,"Courier New",monospace; font-size:.92em; background:#f1f4f7; padding:1px 4px; border-radius:3px; overflow-wrap:anywhere; }
+    pre { white-space:pre-wrap; background:#17263b; color:#f4f8fd; padding:15px; border-radius:7px; font:13px/1.5 Consolas,monospace; }
+    .page { margin-top:38px; }
+    .small { color:var(--muted); font-size:12px; }
+    .toc li { padding:3px 0; }
+    .footer-note { margin-top:30px; padding-top:10px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    @media print {
+      @page { size:A4; margin:16mm 15mm; }
+      body { background:white; font-size:10.5pt; }
+      main { max-width:none; margin:0; padding:0; box-shadow:none; }
+      .cover { min-height:255mm; page-break-after:always; }
+      .page { page-break-before:always; margin-top:0; }
+      h2,h3 { break-after:avoid; }
+      .diagram,.card,table,pre { break-inside:avoid; }
+      a { color:inherit; text-decoration:none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="eyebrow">BEGINNER-FRIENDLY PROJECT GUIDE</div>
+    <h1>SupplyGuard</h1>
+    <p class="subtitle">A plain-English guide to the project’s purpose, web console, scanning API, simulations, workflow, and deployment.</p>
+    <div class="diagram">
+      <div class="flow">
+        <div class="box"><b>Learn</b>Explore delivery and supply-chain ideas</div><span class="arrow">→</span>
+        <div class="box"><b>Simulate</b>Try pipelines, incidents, and shipments</div><span class="arrow">→</span>
+        <div class="box"><b>Scan</b>Check submitted project files with the API</div>
+      </div>
+      <p class="caption">One project with an educational browser simulator and a separate account-based scanner API.</p>
+    </div>
+    <div class="callout warning"><b>Important:</b> The dashboard shows demonstration data. The cloud services, vulnerabilities, deployments, signatures, supply-network events, and metrics displayed by the simulator are not live infrastructure or real findings.</div>
+    <p class="small">Prepared from the project source code and configuration in the SupplyGuard workspace.</p>
+  </section>
+
+  <section>
+    <h2>1. What is SupplyGuard?</h2>
+    <p>SupplyGuard is an educational software-delivery and software-supply-chain demonstration. It helps a beginner see how code can move through checks and into a deployment, and how teams can respond when a check or service fails.</p>
+    <ul>
+      <li><b>Browser simulator:</b> A dashboard with mock CI/CD pipelines, environments, security findings, logs, monitoring, and a digital supply network.</li>
+      <li><b>Scanner API:</b> A Python web service that accepts text files, looks for a small set of common risks, and saves scan summaries for signed-in users.</li>
+      <li><b>Operations examples:</b> Docker Compose, Prometheus/Grafana configuration, Kubernetes manifests, Terraform for AWS, and GitHub Actions workflows.</li>
+    </ul>
+    <div class="callout good"><b>Best way to think about it:</b> the simulator is a training model; the scanner API is the part that actually processes submitted files. The displayed simulated cloud is not connected to a real cloud account.</div>
+    <h3>Contents at a glance</h3>
+    <ol class="toc">
+      <li>What the project is and how its parts fit together</li>
+      <li>What happens when a user opens the dashboard</li>
+      <li>How a pipeline simulation and supply-network simulation work</li>
+      <li>How the scanner API and its scan rules work</li>
+      <li>How data is stored and protected</li>
+      <li>How to run locally with Docker and where to look next</li>
+      <li>What monitoring and deployment files demonstrate</li>
+      <li>Glossary and learning exercises</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>2. Main parts and architecture</h2>
+    <div class="diagram">
+      <div class="flow">
+        <div class="box"><b>Browser</b>HTML + CSS + JavaScript</div><span class="arrow">↔</span>
+        <div class="box"><b>Python server</b>FastAPI + Uvicorn</div><span class="arrow">↔</span>
+        <div class="box"><b>SQLite</b>Accounts, policies, scan history</div>
+      </div>
+      <p class="caption">The Python server serves the web page and exposes API endpoints on the same host and port.</p>
+    </div>
+    <table>
+      <thead><tr><th>Part</th><th>What it does</th><th>Where it lives</th></tr></thead>
+      <tbody>
+        <tr><td>Web page</td><td>Shows the dashboard and accepts clicks. It loads static HTML, CSS, and JavaScript.</td><td><code>frontend/</code></td></tr>
+        <tr><td>Simulation engine</td><td>Advances mock pipeline stages and creates sample logs, events, and metrics in the browser.</td><td><code>frontend/js/simulation.js</code></td></tr>
+        <tr><td>Supply network simulation</td><td>Updates sample stock, suppliers, and shipments in the browser.</td><td><code>frontend/js/supply-network.js</code></td></tr>
+        <tr><td>API server</td><td>Serves the page and provides health, account, policy, and scan endpoints.</td><td><code>backend/main.py</code></td></tr>
+        <tr><td>Scanner and policies</td><td>Checks submitted file text and filters findings using enabled policy records.</td><td><code>backend/scanner_engine.py</code>, <code>backend/policy_engine.py</code></td></tr>
+        <tr><td>Database</td><td>Stores users, scan summaries/findings, and policy switches.</td><td><code>database/</code> and SQLite file</td></tr>
+        <tr><td>Operations configuration</td><td>Describes local containers, metrics, Kubernetes, AWS, and automated checks.</td><td><code>docker-compose.yml</code>, <code>observability/</code>, <code>infra/</code>, <code>.github/workflows/</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout warning"><b>Two different workflows:</b> most dashboard pages run entirely as local browser simulations. The Project Scanner feature uses the Python API, but it needs a scanner account/token. The simulator itself does not turn every mock vulnerability or deployment into a real scan or deployment.</div>
+  </section>
+
+  <section class="page">
+    <h2>3. The browser workflow</h2>
+    <p>When a browser requests the site root, FastAPI returns <code>frontend/index.html</code>. The page loads its stylesheet and JavaScript. The JavaScript builds the navigation and page content in the browser.</p>
+    <ol>
+      <li><b>Start:</b> The app creates a simulation object and draws the Overview page.</li>
+      <li><b>Choose a page:</b> Navigation selects Overview, CI/CD Simulator, Supply Network Simulator, DevOps Environments, Supply Chain Security, Deployments, Monitoring, Logs, Cloud Architecture, Settings, or Project Scanner.</li>
+      <li><b>Take an action:</b> Buttons select scenarios, run or pause a pipeline, simulate an incident, adjust stock, or view reports.</li>
+      <li><b>Update the display:</b> Browser-side JavaScript changes the in-memory demo state, re-renders the selected page, and shows a toast message.</li>
+      <li><b>Refresh sample events:</b> The supply-network simulation advances on a timer. Some preferences, such as simulation speed, are saved in browser local storage.</li>
+    </ol>
+    <div class="diagram">
+      <div class="flow">
+        <div class="box"><b>Click</b>Run pipeline</div><span class="arrow">→</span>
+        <div class="box"><b>Pick scenario</b>Success or a failure</div><span class="arrow">→</span>
+        <div class="box"><b>Advance stages</b>Source → Build → Tests</div><span class="arrow">→</span>
+        <div class="box"><b>Show outcome</b>Logs, status, suggested action</div>
+      </div>
+      <p class="caption">A pipeline is animated in the browser; this training flow does not execute a real build.</p>
+    </div>
+    <h3>Pipeline stages in the simulator</h3>
+    <p><b>Source → Build → Unit tests → Code quality → Security scan → Package → Deploy.</b> A successful scenario moves through each stage. Failure scenarios stop at a selected stage, mark later stages as skipped, and display a sample cause, impact, and recommended response.</p>
+    <ul>
+      <li><b>Build failure:</b> a mock missing-lockfile problem.</li>
+      <li><b>Test failure:</b> a mock regression stops release progress.</li>
+      <li><b>Security vulnerability / supply-chain attack:</b> a mock security gate blocks a suspicious release.</li>
+      <li><b>Deployment rollback / infrastructure incident:</b> a mock health or infrastructure issue halts or rolls back release progress.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2>4. Supply network and security demonstrations</h2>
+    <h3>Digital supply network</h3>
+    <p>The network page uses sample inventory items, supplier scorecards, and shipments. A periodic browser timer advances sample delivery events. Buttons can simulate a stock shortage, delay a shipment, disrupt a supplier, receive replenishment, pause updates, or restore the sample data.</p>
+    <p>For example, “available stock” is calculated as <code>on hand − reserved</code>. It is compared with the sample reorder point to label an item healthy, low-stock, or needing a reorder. Those numbers are demonstration values stored in JavaScript, not a connection to a warehouse system.</p>
+    <h3>Security and operations pages</h3>
+    <ul>
+      <li><b>Supply Chain Security:</b> displays sample vulnerabilities, SBOM rows, artifact trust information, and example policy gates.</li>
+      <li><b>Deployments and environments:</b> show mock release history and development/test/staging/production health.</li>
+      <li><b>Monitoring and logs:</b> display simulated health signals and pipeline events.</li>
+      <li><b>Cloud Architecture:</b> draws an educational source-to-deployment flow and explicitly marks services as mocked.</li>
+    </ul>
+    <div class="callout"><b>Learning point:</b> a dashboard can be realistic-looking while still being a simulator. Before acting on a finding, confirm whether the data came from a real scan, an external data source, or sample code.</div>
+  </section>
+
+  <section class="page">
+    <h2>5. How the scanner API works</h2>
+    <p>The backend is a FastAPI application in Python. The web server serves the home page and static files and also exposes API routes. The OpenAPI documentation is available at <code>/docs</code> while the server is running.</p>
+    <div class="diagram">
+      <div class="flow">
+        <div class="box"><b>1. Sign in</b>Register or log in</div><span class="arrow">→</span>
+        <div class="box"><b>2. Send files</b>Paths + text contents</div><span class="arrow">→</span>
+        <div class="box"><b>3. Validate</b>Check request limits and paths</div><span class="arrow">→</span>
+        <div class="box"><b>4. Scan + policy</b>Find and filter risks</div><span class="arrow">→</span>
+        <div class="box"><b>5. Save report</b>SQLite scan summary</div>
+      </div>
+      <p class="caption">The API processes submitted file text in memory. It does not open arbitrary local paths on the server.</p>
+    </div>
+    <table>
+      <thead><tr><th>Endpoint</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /api/health</code></td><td>Simple service-health response.</td></tr>
+        <tr><td><code>POST /api/auth/register</code></td><td>Create an account and return an access token.</td></tr>
+        <tr><td><code>POST /api/auth/login</code></td><td>Check credentials and return a token.</td></tr>
+        <tr><td><code>GET /api/auth/me</code></td><td>Return the signed-in account when a valid bearer token is supplied.</td></tr>
+        <tr><td><code>GET /api/policies</code></td><td>List enabled scanning policies for the signed-in user.</td></tr>
+        <tr><td><code>POST /api/scans</code></td><td>Scan supplied files and save the report.</td></tr>
+        <tr><td><code>GET /api/scans</code>, <code>GET /api/scans/{id}</code></td><td>Read scan history belonging to the signed-in user.</td></tr>
+        <tr><td><code>GET /metrics</code></td><td>Expose a few static demo metrics in Prometheus format.</td></tr>
+      </tbody>
+    </table>
+    <h3>What the scanner checks</h3>
+    <ul>
+      <li>Credential-like strings in source text (pattern matching, not a complete secret scanner).</li>
+      <li>Python requirements entries without an explicit version.</li>
+      <li>JavaScript dependencies set to <code>*</code>/<code>latest</code>, or using floating <code>^</code>/<code>~</code> ranges.</li>
+      <li>A recognized dependency manifest without a recognized lock file.</li>
+      <li>Dockerfiles without a <code>USER</code> instruction or with an unpinned base image.</li>
+      <li>Invalid JSON in <code>package.json</code>.</li>
+    </ul>
+    <p>Findings have a rule ID, severity, file path, optional line, explanation, and recommendation. The policy engine keeps only findings whose policy is enabled. A risk score is calculated from severity weights and capped at 100. The scan is marked blocked for a critical finding, attention when findings remain, and passed when there are none.</p>
+    <div class="callout warning"><b>Limits:</b> The API accepts up to 500 files and 5 MB of total UTF-8 text per scan. These lightweight static rules do not query a live vulnerability database and cannot prove that dependencies are safe.</div>
+  </section>
+
+  <section class="page">
+    <h2>6. Accounts, data, and safety</h2>
+    <ul>
+      <li><b>Passwords:</b> The backend stores a password hash rather than the original password.</li>
+      <li><b>API sessions:</b> The backend signs expiring bearer tokens using <code>SECRET_KEY</code>.</li>
+      <li><b>Access control:</b> Scan history queries are scoped to the authenticated user.</li>
+      <li><b>SQLite:</b> The database stores accounts, policies, scan metadata, and serialized findings. The scanner comments that uploaded file contents are not stored in the scan history.</li>
+      <li><b>Input checks:</b> Pydantic models validate request fields; scanner paths reject absolute paths and paths containing parent-directory traversal.</li>
+      <li><b>Local storage:</b> The simulator keeps some client-side state/settings in the browser; this is separate from API account and scan records.</li>
+    </ul>
+    <div class="callout warning"><b>Before real use:</b> create a private, strong random <code>SECRET_KEY</code> in <code>.env</code>, keep that file private, restrict CORS origins for a deployment, and do not upload sensitive files unless you trust the server. Never treat demo security scores as production audit results.</div>
+    <h3>Policy files</h3>
+    <p>The API policy catalog is seeded in <code>database/seed.sql</code>. The separate Rego example in <code>policies/supply_chain.rego</code> demonstrates a policy-as-code decision: critical findings block and high findings trigger attention. It is an example policy file, not evidence that the Rego engine is called by every API scan.</p>
+  </section>
+
+  <section class="page">
+    <h2>7. Run the project with Docker</h2>
+    <p>Docker Compose can start the application and its local monitoring tools. Run these commands from the project directory in PowerShell. Docker Desktop must be installed and running.</p>
+    <pre>cd D:\KARUNYA\Projects\supplyguard
+Copy-Item .env.example .env
+# Edit .env and replace SECRET_KEY with a long random value.
+docker compose up --build</pre>
+    <p>Then open:</p>
+    <ul>
+      <li><code>http://localhost:5050</code> — SupplyGuard web page.</li>
+      <li><code>http://localhost:5050/docs</code> — interactive API documentation.</li>
+      <li><code>http://localhost:5050/api/health</code> — app health response.</li>
+      <li><code>http://localhost:9090</code> — Prometheus, if its Compose service starts.</li>
+      <li><code>http://localhost:3000</code> — Grafana, if its Compose service starts. The current Compose file has a demo admin password setting; change it before exposing Grafana beyond a trusted local machine.</li>
+    </ul>
+    <p>Compose keeps the SQLite database and monitoring data in named Docker volumes. Stop foreground services with <code>Ctrl+C</code>; to stop and remove the Compose containers, run <code>docker compose down</code>. Named volumes are separate and remain unless explicitly removed.</p>
+    <div class="callout"><b>Ports:</b> The app uses port 5050 by default. Compose allows the application port to be changed with <code>PORT</code>; Prometheus and Grafana use <code>PROMETHEUS_PORT</code> and <code>GRAFANA_PORT</code>. Ensure those host ports are free.</div>
+    <h3>Local Python alternative</h3>
+    <pre>cd D:\KARUNYA\Projects\supplyguard
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+Copy-Item .env.example .env
+pip install -r requirements.txt
+python run.py</pre>
+    <p>When using the local Python option, open the same page at <code>http://127.0.0.1:5050</code>. To check the running container, use <code>docker compose ps</code> and <code>docker compose logs -f supplyguard</code>.</p>
+  </section>
+
+  <section class="page">
+    <h2>8. Monitoring, tests, and deployment examples</h2>
+    <h3>Local observability</h3>
+    <p>The application exposes <code>/metrics</code>. Prometheus is configured to scrape the app, and Grafana has a preconfigured data source and dashboard. The metrics currently describe demo state (such as a simulator-mode flag and fixed sample counts); they are not measurements of actual cloud workloads.</p>
+    <h3>Automated checks</h3>
+    <p>The GitHub Actions CI workflow installs Python/Node/Terraform tools, runs pytest, checks JavaScript syntax, validates Terraform formatting and configuration, checks Docker Compose, and builds the application image.</p>
+    <h3>Deployment examples</h3>
+    <ul>
+      <li><b>Kubernetes:</b> namespace, deployment, service, ingress, persistent storage, health probes, and non-root container settings are provided as example manifests. Replace example names/images and supply a real secret before using them.</li>
+      <li><b>AWS with Terraform:</b> describes a VPC, load balancer, ECS Fargate service, ECR image repository, EFS persistence, and CloudWatch logs.</li>
+      <li><b>GitHub deployment workflow:</b> demonstrates publishing an image to ECR and applying Terraform with AWS credentials through GitHub OIDC.</li>
+    </ul>
+    <div class="callout warning"><b>These are deployment templates, not a live deployment.</b> They need cloud accounts, permissions, secrets, correct image names, and careful review. AWS resources may incur cost. The Kubernetes image name and sample secret must be replaced before deployment.</div>
+  </section>
+
+  <section class="page">
+    <h2>9. Where to start reading the code</h2>
+    <table>
+      <thead><tr><th>If you want to learn about…</th><th>Start here</th></tr></thead>
+      <tbody>
+        <tr><td>Page structure and styling</td><td><code>frontend/index.html</code>, <code>frontend/css/styles.css</code></td></tr>
+        <tr><td>Dashboard navigation and page rendering</td><td><code>frontend/js/app.js</code></td></tr>
+        <tr><td>Pipeline stages and failure scenarios</td><td><code>frontend/js/simulation.js</code></td></tr>
+        <tr><td>Inventory and shipment simulation</td><td><code>frontend/js/supply-network.js</code></td></tr>
+        <tr><td>API routes and HTTP behavior</td><td><code>backend/main.py</code></td></tr>
+        <tr><td>Scan rules and path validation</td><td><code>backend/scanner_engine.py</code></td></tr>
+        <tr><td>Policies and severity decisions</td><td><code>backend/policy_engine.py</code>, <code>database/seed.sql</code></td></tr>
+        <tr><td>Tables and database setup</td><td><code>database/schema.sql</code>, <code>backend/database.py</code></td></tr>
+        <tr><td>Container and local services</td><td><code>Dockerfile</code>, <code>docker-compose.yml</code></td></tr>
+        <tr><td>Monitoring and deployment</td><td><code>observability/</code>, <code>infra/kubernetes/</code>, <code>infra/terraform/</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page">
+    <h2>10. Beginner glossary and exercises</h2>
+    <div class="grid">
+      <div class="card"><h3>API</h3>A defined way for one program to ask another program for data or work.</div>
+      <div class="card"><h3>CI/CD</h3>Continuous integration and delivery: automate checks and release steps after code changes.</div>
+      <div class="card"><h3>Dependency</h3>External software that a project uses.</div>
+      <div class="card"><h3>Lock file</h3>A file that records exact dependency versions so installs are more repeatable.</div>
+      <div class="card"><h3>SBOM</h3>Software bill of materials: a list of components in a software product.</div>
+      <div class="card"><h3>Container</h3>A packaged app and its runtime pieces, designed to run consistently in different environments.</div>
+      <div class="card"><h3>Bearer token</h3>A temporary credential sent with an API request to show that a user is signed in.</div>
+      <div class="card"><h3>Prometheus / Grafana</h3>Tools commonly used to collect metrics and show them on dashboards.</div>
+    </div>
+    <h3>Try these learning activities</h3>
+    <ol>
+      <li>Run the “Test failure” pipeline scenario. Find the failed stage, the root cause, and the proposed next step.</li>
+      <li>Run the “Supply-chain attack” scenario. Explain why a policy gate should stop an untrusted package.</li>
+      <li>Simulate a stock shortage and explain how available inventory differs from on-hand inventory.</li>
+      <li>Open <code>/docs</code>, register a test account, and inspect how the API describes a request and response.</li>
+      <li>Submit a small test manifest to the scanner. Compare its findings with the rules in <code>backend/scanner_engine.py</code>.</li>
+      <li>Change a sample policy in a local learning copy, then run the automated tests and explain the behavior change.</li>
+    </ol>
+    <p class="footer-note">Educational note: SupplyGuard is a learning aid. Its mock dashboards and small static scanner are not substitutes for production monitoring, security review, vulnerability intelligence, or a complete supply-chain assurance program.</p>
+  </section>
+</main>
+</body>
+</html>

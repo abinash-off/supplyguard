@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: supplyguard
+  labels:
+    app.kubernetes.io/name: supplyguard
+    app.kubernetes.io/part-of: supplyguard-demo
